@@ -1,3 +1,4 @@
+import { CookieService } from 'ngx-cookie-service';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -14,7 +15,7 @@ export class UserService {
 
   private API_URL = environment.API_URL;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private cookieService: CookieService) { }
 
   signupUser(dados: SignupUserRequest): Observable<SignupUserResponse> {
     return this.http.post<SignupUserResponse>(
@@ -26,5 +27,11 @@ export class UserService {
     return this.http.post<AuthResponse>(
       `${this.API_URL}/auth`, dados
     );
+  }
+
+  isLoggedIn(): boolean {
+    // o cookie USER_INFO foi definido no home.component.ts
+    const JWT_TOKEN = this.cookieService.get('USER_INFO');
+    return JWT_TOKEN ? true : false;
   }
 }
