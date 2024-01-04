@@ -31,3 +31,4 @@ npm install primeng@16
 npm install primeicons
 npm install primeflex
 npm install ngx-cookie-service@16 --save
+npm install chart.js --save
