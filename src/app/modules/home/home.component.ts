@@ -1,3 +1,4 @@
+import { MessageService } from 'primeng/api';
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { CookieService } from 'ngx-cookie-service';
@@ -28,7 +29,8 @@ export class HomeComponent {
   constructor(
     private formBuilder: FormBuilder,
     private userService: UserService,
-    private cookieService: CookieService
+    private cookieService: CookieService,
+    private messageService: MessageService
   ) {}
 
   onSubmitLoginForm(): void {
@@ -42,9 +44,23 @@ export class HomeComponent {
             // ao operador, caso ele seja undefined ou null. Evita erros the uncaught property
             this.cookieService.set('USER_INFO', response?.token);
             this.loginForm.reset();
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Sucesso',
+              detail: `Bem-vindo de volta ${response?.name}`,
+              life: 5000
+            })
           }
         },
-        error: (err) => console.log(err)
+        error: (err) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erro',
+            detail: 'Erro ao fazer login!',
+            life: 5000
+          })
+          console.log(err)
+        }
       })
     }
   }
@@ -58,15 +74,28 @@ export class HomeComponent {
         // callback de sucesso
         next: (response) => {
           if (response) {
-            alert('Usuário criado com sucesso!');
             // limpa o formulário
             this.signupForm.reset();
             // muda para o formulário de login
             this.loginCard = true;
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Sucesso',
+              detail: 'Usuário criado com sucesso!',
+              life: 5000
+            });
           }
         },
         // callback caso ocorra algum erro
-        error: (err) => console.log(err)
+        error: (err) => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Erro',
+            detail: 'Erro ao criar usuário!',
+            life: 5000
+          });
+          console.log(err)
+        }
       });
     }
   }
