@@ -14,6 +14,7 @@ import { ChartModule } from 'primeng/chart';
 
 import { DashboardHomeComponent } from './page/dashboard-home/dashboard-home.component';
 import { DASHBOARD_ROUTES } from './dashboard.routing';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 
 
@@ -32,7 +33,9 @@ import { DASHBOARD_ROUTES } from './dashboard.routing';
     ToolbarModule,
     CardModule,
     ToastModule,
-    ChartModule
+    ChartModule,
+    // shared
+    SharedModule // para poder usar a toolbar do módulo shared
   ],
   providers: [
     MessageService,
