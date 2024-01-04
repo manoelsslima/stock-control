@@ -30,3 +30,4 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 npm install primeng@16
 npm install primeicons
 npm install primeflex
+npm install ngx-cookie-service@16 --save
