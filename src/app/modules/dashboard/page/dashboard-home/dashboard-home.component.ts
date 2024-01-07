@@ -1,3 +1,4 @@
+import { ProductsDataTransferService } from './../../../../shared/services/products/products-data-transfer.service';
 import { Component, OnInit } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { GetAllProductsResponse } from 'src/app/models/interfaces/products/response/GetAllProductsResponse';
@@ -14,7 +15,8 @@ export class DashboardHomeComponent implements OnInit {
 
   constructor(
     private productsService: ProductsService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private productsDataTransferService: ProductsDataTransferService
   ) {}
 
   ngOnInit(): void {
@@ -27,7 +29,7 @@ export class DashboardHomeComponent implements OnInit {
       next: (response) => {
         if (response.length > 0) {
           this.productList = response;
-          console.log('dados dos produtos', this.productList);
+          this.productsDataTransferService.setProductData(this.productList);
         }
       },
       error: (err) => {
