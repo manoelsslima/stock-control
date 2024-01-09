@@ -21,6 +21,14 @@ const routes: Routes = [
       (m) => m.DashboardModule
     ),
     canActivate: [AuthGuard] // faz a verificação do login com o guarda de rotas
+  },
+  {
+    path: 'products',
+    // load lazy do módulo
+    loadChildren: () => import('./modules/products/products.module').then(
+      (p) => p.ProductsModule
+    ),
+    canActivate: [AuthGuard]
   }
 ];
 
