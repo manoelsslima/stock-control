@@ -63,6 +63,12 @@ export class ProductsHomeComponent implements OnInit, OnDestroy {
     }
   }
 
+  handleDeleteProductAction(event: {product_id: string, productName: string}): void {
+    if (event) {
+      console.log(`Dados do evento recebido`, event);
+    }
+  }
+
   // evita o memory leak
   ngOnDestroy(): void {
     this.destroy$.next();

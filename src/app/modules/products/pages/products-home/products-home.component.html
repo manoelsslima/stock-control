@@ -2,4 +2,5 @@
 <!-- passando a lista productsList do component products-home para o componente app-products-table -->
 <app-products-table [products]="productsList"
 (productEvent)="handleProductAction($event)"
+(deleteProductEvent)="handleDeleteProductAction($event)"
 ></app-products-table>
