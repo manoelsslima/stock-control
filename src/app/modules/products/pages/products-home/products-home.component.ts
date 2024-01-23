@@ -62,6 +62,7 @@ export class ProductsHomeComponent implements OnInit, OnDestroy {
     });
   }
 
+  // enviamos os dados quando abrimos o ProductFormComponent
   handleProductAction(event: EventAction): void {
     if (event) {
       this.ref = this.dialogService.open(ProductFormComponent, {

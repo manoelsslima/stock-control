@@ -7,6 +7,10 @@ import { Router } from '@angular/router';
 import { GetCategoriesResponse } from 'src/app/models/interfaces/categories/response/GetCategoriesResponse';
 import { CreateProductRequest } from 'src/app/models/interfaces/products/request/CreateProductRequest';
 import { ProductsService } from 'src/app/services/products/products.service';
+import { DynamicDialogConfig } from 'primeng/dynamicdialog';
+import { EventAction } from 'src/app/models/interfaces/products/event/EventAction';
+import { GetAllProductsResponse } from 'src/app/models/interfaces/products/response/GetAllProductsResponse';
+import { ProductsDataTransferService } from 'src/app/shared/services/products/products-data-transfer.service';
 
 @Component({
   selector: 'app-product-form',
@@ -18,6 +22,24 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   private readonly destroy$: Subject<void> = new Subject();
   public categoryList: Array<GetCategoriesResponse> = [];
   public selectedCategory: Array<{ name: string; code: string }> = [];
+  // o ! indica que vai inicializar com vazio
+  // vamos receber esses dados do product-home.component
+  public productAction!: {
+    event: EventAction;
+    productList: Array<GetAllProductsResponse>;
+  };
+  public productSelected!: GetAllProductsResponse;
+  public productData: Array<GetAllProductsResponse> = [];
+
+  constructor(
+    private categoriesService: CategoriesService,
+    private productService: ProductsService,
+    private productsDataTransferService: ProductsDataTransferService,
+    private form: FormBuilder,
+    private message: MessageService,
+    private router: Router,
+    private ref: DynamicDialogConfig
+  ) {}
 
   // cria o formulário para cadastro de produtos
   // addProductForm é referenciado propriedade formGroup da tag <form>
@@ -32,15 +54,15 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     amount: [0, Validators.required],
   });
 
-  constructor(
-    private categoriesService: CategoriesService,
-    private productService: ProductsService,
-    private form: FormBuilder,
-    private message: MessageService,
-    private router: Router
-  ) {}
+  public editProductForm = this.form.group({
+    name: ['', Validators.required],
+    price: ['', Validators.required],
+    description: ['', Validators.required],
+    amount: [0, Validators.required]
+  });
 
   ngOnInit(): void {
+    this.productAction = this.ref.data;
     this.getAllCategories();
   }
 
@@ -89,6 +111,41 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     }
     // limpa o form após o cadastro
     this.addProductForm.reset();
+  }
+
+  handleSubmitEditProduct(): void {
+    // if (this.editProductForm.value && this.editProductForm.valid) {
+
+    // }
+  }
+
+  getProductSelected(productId: string): void {
+    const allProducts = this.productAction?.productList;
+    if (allProducts.length > 0) {
+      const productFiltered = allProducts.filter((element) => element.id === productId)
+      if (productFiltered) {
+        this.productSelected = productFiltered[0];
+        this.editProductForm.setValue({
+          name: this.productSelected?.name,
+          price: this.productSelected?.price,
+          description: this.productSelected?.description,
+          amount: this.productSelected?.amount,
+        });
+      }
+    };
+  }
+
+  getProductData(): void {
+    this.productService.getAllProducts()
+    .pipe(takeUntil(this.destroy$))
+    .subscribe({
+      next: (response) => {
+        if (response.length > 0) {
+          this.productData = response;
+          this.productData && this.productsDataTransferService.setProductData(this.productData);
+        }
+      }
+    })
   }
 
   ngOnDestroy(): void {
